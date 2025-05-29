@@ -3,6 +3,7 @@
 #include <array>
 #include <typeinfo>
 
+// this is a generic package class
 template<typename T>
 class Package {
 private:
@@ -14,6 +15,7 @@ public:
     }
 };
 
+//case for strings
 template<>
 class Package<std::string> {
 private:
@@ -21,10 +23,12 @@ private:
 public:
     Package(std::string i) : item(i) {}
     void label() {
+        //prints the type
         std::cout << "Book package: \"" << item << "\"\n";
     }
 };
 
+//handles pointer types and for fragile stuff
 template<typename T>
 class Package<T*> {
 private:
@@ -36,6 +40,7 @@ public:
     }
 };
 
+//box that has a fixed size
 template<typename T, int Size>
 class Box {
 private:
@@ -48,6 +53,7 @@ public:
             std::cout << "Added item to box: \"" << item << "\"\n";
             return true;
         }
+        //box if full
         return false;
     }
 
@@ -59,34 +65,40 @@ public:
     }
 };
 
+//shipping func
 template<typename T>
 void shipItem(const T& item) {
     std::cout << "Shipping item of type: " << typeid(T).name() << "\n";
 }
 
+//for doubles, temperature as controlled shipment
 template<>
 void shipItem(const double& item) {
-    std::cout << "Shipping temperature-controlled item: " << item << "°C\n";
+    std::cout << "Shipping temperature-controlled item: " << item << "Â°C\n";
 }
-
+//cleans up the string output to resemble sample code, otherwise it looks messy
 template<>
 void shipItem(const std::string& item) {
     std::cout << "Shipping item of type: std::string\n";
 }
 
 int main() {
+    //makes a package with int
     Package<int> p1(42);
     p1.label();
 
+    // book package
     Package<std::string> p2("C++ Primer");
     p2.label();
 
+    //fragile package
     double temp = 98.6;
     Package<double*> p3(&temp);
     p3.label();
 
     std::cout << "\n";
 
+    //tests the box class
     Box<std::string, 3> bookBox;
     bookBox.addItem("The Pragmatic Programmer");
     bookBox.addItem("Clean Code");
@@ -94,9 +106,10 @@ int main() {
 
     std::cout << "\n";
 
-    shipItem(7);
-    shipItem(std::string("Package Label"));
-    shipItem(22.5);
+    //ships various items
+    shipItem(7); //regular item
+    shipItem(std::string("Package Label")); //string item
+    shipItem(22.5); //temp-sens item
 
     return 0;
 }
